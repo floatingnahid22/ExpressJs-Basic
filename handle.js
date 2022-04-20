@@ -1,6 +1,13 @@
+// accepts method
+// const handle = (req, res) => {
+//     console.log(req.accepts('json'));
+//     res.send('hello');
+// };
+
+//get method
 const handle = (req, res) => {
-    console.log(req.app.locals.title);
-    res.send('this is home page');
+    console.log(req.get('Accept'));
+    res.send('hello world');
 };
 
-module.exports = handle
+module.exports = handle;

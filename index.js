@@ -1,155 +1,96 @@
-// const express  = require('express');
-
-// const app = express();
-
-// //express.static()
-// // app.use(express.static(`${__dirname}/public/`, {
-// //     index: "home.html",
-// // })
-// // );
-
-// //express.router
-// const router = express.Router({
-//     caseSensitive: false,
-// });
-// app.use(router);
-
-// app.get('/about', (req, res) => {
-//     res.send('this is home page');
-// });
-
-// app.post('/', (req, res) => {
-//     // console.log(req.body);
-//     res.send('this is home page with post request');
-// });
-
-// app.listen(3000, () => {
-//     console.log('listening on port 3000');
-// });
-
-//application object 
-//app locals
-// const express  = require('express');
-// const handle  = require('./handle');
-
-// const app = express();
-
-
-// app.locals.title = 'My App';
-
-// app.get('/', handle);
-
-// app.listen(3000, () => {
-//     console.log('listening on port 3000');
-// });
-
-//app sub app
-
-// const express  = require('express');
-
-// const app = express();
-// const admin = express();
-
-// admin.get('/dashboard',(req, res) => {
-//     console.log(admin.mountpath);
-//     res.send('Welcome to admin dashboard');
-// });
-
-// app.get('/',(req, res) => {
-//     res.send('Welcome to homepage');
-// });
-
-// app.use('/admin', admin)
-
-// app.listen(3000, () => {
-//     console.log('listening on port 3000');
-// });
-
-//different methods
-//app.all()
+//path
 
 // const express  = require('express');
 
 // const app = express();
 
-// app.all('/',(req, res) => {
-//     res.send('Welcome to homepage');
+// const adminRoute = express.Router();
+// adminRoute.get('/dashboard', (req, res) => {
+//     console.log(req.path);
+//     res.send('We are in admin dashboard');
 // });
 
-// app.listen(3000, () => {
-//     console.log('listening on port 3000');
-// });
-
-
-//app.disable()/enable()
-// const express  = require('express');
-
-// const app = express();
-
-// app.enable('case sensitive routing');
-// app.disable('case sensitive routing');
-
-// //app.param()
-// app.param('id', (req, res, next, id) => {
-//     const user = {
-//         userid: id,
-//         name: 'Bangladesh'
-//     };
-//     req.userDetails = user;
-//     next();
-// });
-
+// app.use('/admin', adminRoute);
 
 // app.get('/user/:id',(req, res) => {
-//     console.log(req.userDetails);
-//     res.send('Welcome to homepage');
+//     console.log(req.path);
+//     res.send('Hello World');
 // });
-
+    
 // app.listen(3000, () => {
 //     console.log('listening on port 3000');
 // });
 
-
-//app.route()
 // const express  = require('express');
+// const cookieParser  = require('cookie-parser');
+
 
 // const app = express();
+// app.use(express.json());
+// app.use(cookieParser());
 
+// const adminRoute = express.Router();
+// adminRoute.get('/dashboard', (req, res) => {
+//     console.log(req.hostname);
+//     res.send('We are in admin dashboard');
+// });
 
-// app.route('/about/mission')
-//     .get((req, res) => {
-//         res.send('Welcome to application home get');
-//     })
-//     .post((req, res) => {
-//         res.send('Welcome to application home post');
-//     })
-//     .put((req, res) => {
-//         res.send('Welcome to application home put');
-//     });
+// app.use('/admin', adminRoute);
 
+// app.get('/user/:id',(req, res) => {
+//    // console.log(req.hostname);
+//    // console.log(req.protocol);
+//    // console.log(req.params);
+//    // console.log(req.query);
+//    // console.log(req.query);
+//    // console.log(req.cookies);
+//     console.log(req.secure);
+//     res.send('Hello World');
+// });
+
+// app.post('/user/',(req, res) => {
+//     console.log(req.body);
+//     res.send('Hello World post');
+// });
+    
 // app.listen(3000, () => {
 //     console.log('listening on port 3000');
 // });
 
-//template engine 
-//ejs
+
+//route
+// 
+
+
+// methods
 const express  = require('express');
+const cookieParser  = require('cookie-parser');
+const handle = require('./handle');
+
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
-app.set('view engine', 'ejs');
+const adminRoute = express.Router();
+adminRoute.get('/dashboard', (req, res) => {
+    console.log(req.hostname);
+    res.send('We are in admin dashboard');
+});
 
-app.route('/about/mission')
-    .get((req, res) => {
-        res.render('pages/about');
-    })
-    .post((req, res) => {
-        res.send('Welcome to application home post');
-    })
-    .put((req, res) => {
-        res.send('Welcome to application home put');
-    });
+app.use('/admin', adminRoute);
 
+app.get('/user/:id', handle);
+
+app.post('/user/',(req, res) => {
+    console.log(req.route);
+    res.send('Hello World post');
+});
+app.get('/user/',(req, res) => {
+    console.log(req.route);
+    res.send('Hello World get');
+});
+    
 app.listen(3000, () => {
     console.log('listening on port 3000');
 });
