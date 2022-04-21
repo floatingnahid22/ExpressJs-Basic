@@ -1,114 +1,55 @@
-// locals, headerSent
-// const express  = require('express');
-
-// const app = express();
-
-// app.set('view engine', 'ejs');
-
-// app.get('/about',(req, res) => {
-//     console.log(res.headersSent);
-//     res.render('pages/about', {
-//         name: 'Bangladesh',  // send object to ejs file as locals
-//     });
-//     console.log(res.headersSent);
-
-// });
-
-// app.listen(3000, () => {
-//     console.log('listening on port 3000');
-// });
-
-//methods
-// const express = require("express");
-
-// const app = express();
-
-// app.set("view engine", "ejs");
-
-// app.get("/about", (req, res) => {
-// //   res.send("About"); //with data for ending response
-// //   res.end(); //without data for ending response
-// //   res.json({
-// //     name: "Bangladesh",
-// //   });
-//     // res.status(200);
-//     // res.end();
-//     // or
-//     res.sendStatus(200);
-// });
-
-// app.listen(3000, () => {
-//   console.log("listening on port 3000");
-// });
-
-
-// res.formate()
-
-// const express = require("express");
-
-// const app = express();
-
-// app.set("view engine", "ejs");
-
-
-
-// app.get('/test', (req, res) => {
-//     res.send('Hello');
-// });
-// app.get("/about", (req, res) => {
-//     // res.format({
-//     //     'text/plain': () => {
-//     //         res.send('Hi');
-//     //     },
-//     //     'text/html': () => {
-//     //         res.render('pages/about', {
-//     //             name: 'Bangladesh',
-//     //         });
-//     //     },
-//     //     'application/json': () => {
-//     //         res.json({
-//     //             message: 'About',
-//     //         });
-//     //     },
-//     //     default: () => {
-//     //         res.status(403).send('not acceptable');
-//     //     }
-//     // });
-
-//     // res.cookie
-//     // res.cookie('name', 'Nahid', {});
-//     // res.end();
-
-//     //res.location
-//     // res.location('/test');    
-//     res.redirect('/test');    
-//     res.end();
-// });
-
-// app.listen(3000, () => {
-//   console.log("listening on port 3000");
-// });
-
-
-
-// res.get/set()
+// middleware- functions that have access to req and res object and also next function
+// tasks:
+// 1. executes any js code
+// 2. can change req and res objects
+// 3. can end request/response cycle
+// 4. call next middleware by next()
+// 5. throw and catch errors
 
 const express = require("express");
+const cookieParser = require("cookie-parser");
+const { options } = require("nodemon/lib/config");
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
-app.set("view engine", "ejs");
+const adminRouter = express.Router();
 
+const loggerWrapper = (options) => {
+  return function (req, res, next) {
+    if (options.log) {
+      console.log(
+        `${new Date(Date.now()).toLocaleString()} - ${req.method} - ${
+          req.originalUrl
+        } - ${req.protocol} - ${req.ip}`
+      );
+      next();
+    } else {
+      throw new Error("failed to log");
+    }
+  };
+};
 
+adminRouter.use(loggerWrapper({ log: /*false*/ true}));
 
-app.get('/test', (req, res) => {
-    res.send('Hello');
+adminRouter.get("/dashboard", (req, res) => {
+  res.send("dashboard");
 });
+
+app.use("/admin", adminRouter);
+
 app.get("/about", (req, res) => {
-    res.set('title', 'Express Basic');
-    console.log(res.get('title'));
-    res.end();
+  res.send("About");
 });
+
+// error handling middleware
+const errorMiddleware = (err, req, res, next) => {
+  console.log(err.message);
+  res.status(500).send("there was a serverside error!");
+};
+
+adminRouter.use(errorMiddleware);
 
 app.listen(3000, () => {
   console.log("listening on port 3000");
