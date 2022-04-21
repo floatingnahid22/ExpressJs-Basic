@@ -1,96 +1,115 @@
-//path
-
+// locals, headerSent
 // const express  = require('express');
 
 // const app = express();
 
-// const adminRoute = express.Router();
-// adminRoute.get('/dashboard', (req, res) => {
-//     console.log(req.path);
-//     res.send('We are in admin dashboard');
+// app.set('view engine', 'ejs');
+
+// app.get('/about',(req, res) => {
+//     console.log(res.headersSent);
+//     res.render('pages/about', {
+//         name: 'Bangladesh',  // send object to ejs file as locals
+//     });
+//     console.log(res.headersSent);
+
 // });
 
-// app.use('/admin', adminRoute);
-
-// app.get('/user/:id',(req, res) => {
-//     console.log(req.path);
-//     res.send('Hello World');
-// });
-    
 // app.listen(3000, () => {
 //     console.log('listening on port 3000');
 // });
 
-// const express  = require('express');
-// const cookieParser  = require('cookie-parser');
-
+//methods
+// const express = require("express");
 
 // const app = express();
-// app.use(express.json());
-// app.use(cookieParser());
 
-// const adminRoute = express.Router();
-// adminRoute.get('/dashboard', (req, res) => {
-//     console.log(req.hostname);
-//     res.send('We are in admin dashboard');
+// app.set("view engine", "ejs");
+
+// app.get("/about", (req, res) => {
+// //   res.send("About"); //with data for ending response
+// //   res.end(); //without data for ending response
+// //   res.json({
+// //     name: "Bangladesh",
+// //   });
+//     // res.status(200);
+//     // res.end();
+//     // or
+//     res.sendStatus(200);
 // });
 
-// app.use('/admin', adminRoute);
-
-// app.get('/user/:id',(req, res) => {
-//    // console.log(req.hostname);
-//    // console.log(req.protocol);
-//    // console.log(req.params);
-//    // console.log(req.query);
-//    // console.log(req.query);
-//    // console.log(req.cookies);
-//     console.log(req.secure);
-//     res.send('Hello World');
-// });
-
-// app.post('/user/',(req, res) => {
-//     console.log(req.body);
-//     res.send('Hello World post');
-// });
-    
 // app.listen(3000, () => {
-//     console.log('listening on port 3000');
+//   console.log("listening on port 3000");
 // });
 
 
-//route
-// 
+// res.formate()
+
+// const express = require("express");
+
+// const app = express();
+
+// app.set("view engine", "ejs");
 
 
-// methods
-const express  = require('express');
-const cookieParser  = require('cookie-parser');
-const handle = require('./handle');
 
+// app.get('/test', (req, res) => {
+//     res.send('Hello');
+// });
+// app.get("/about", (req, res) => {
+//     // res.format({
+//     //     'text/plain': () => {
+//     //         res.send('Hi');
+//     //     },
+//     //     'text/html': () => {
+//     //         res.render('pages/about', {
+//     //             name: 'Bangladesh',
+//     //         });
+//     //     },
+//     //     'application/json': () => {
+//     //         res.json({
+//     //             message: 'About',
+//     //         });
+//     //     },
+//     //     default: () => {
+//     //         res.status(403).send('not acceptable');
+//     //     }
+//     // });
+
+//     // res.cookie
+//     // res.cookie('name', 'Nahid', {});
+//     // res.end();
+
+//     //res.location
+//     // res.location('/test');    
+//     res.redirect('/test');    
+//     res.end();
+// });
+
+// app.listen(3000, () => {
+//   console.log("listening on port 3000");
+// });
+
+
+
+// res.get/set()
+
+const express = require("express");
 
 const app = express();
-app.use(express.json());
-app.use(cookieParser());
 
-const adminRoute = express.Router();
-adminRoute.get('/dashboard', (req, res) => {
-    console.log(req.hostname);
-    res.send('We are in admin dashboard');
+app.set("view engine", "ejs");
+
+
+
+app.get('/test', (req, res) => {
+    res.send('Hello');
+});
+app.get("/about", (req, res) => {
+    res.set('title', 'Express Basic');
+    console.log(res.get('title'));
+    res.end();
 });
 
-app.use('/admin', adminRoute);
-
-app.get('/user/:id', handle);
-
-app.post('/user/',(req, res) => {
-    console.log(req.route);
-    res.send('Hello World post');
-});
-app.get('/user/',(req, res) => {
-    console.log(req.route);
-    res.send('Hello World get');
-});
-    
 app.listen(3000, () => {
-    console.log('listening on port 3000');
+  console.log("listening on port 3000");
 });
