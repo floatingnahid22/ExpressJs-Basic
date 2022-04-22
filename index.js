@@ -1,78 +1,212 @@
-//synchronous code error handle
-
+/*
 // const express = require("express");
+// const multer = require("multer");
+
+// // file upload folder
+// const UPLOADS_FOLDER = "./uploads/";
+
+// // prepare final multer upload object
+// var upload = multer({
+//   dest: UPLOADS_FOLDER,
+//   limits: {
+//     fileSize: 1000000, // byte size- 1MB
+//   },
+//   // single file
+//   fileFilter: (req, file, cb) => {
+//     if (
+//       file.mimetype === "image/png" ||
+//       file.mimetype === "image/jpg" ||
+//       file.mimetype === "image/jpeg"
+//     ) {
+//       cb(null, true);
+//     } else {
+//       cb(new Error("Only .png, .jpg or .jpeg formate allowed"));
+//     }
+//   },
+// });
 
 // const app = express();
 
-// app.get("/", (req, res) => {
-//   for (let i = 0; i <= 10; i++) {
-//     if (i === 5) {
-//       next("there was an error!");
-//     } else {
-//       res.write("a");
-//     }
-//   }
-//   res.end();
+// // application route
+// // multiple file uploads
+// // app.post("/", upload.fields([
+// //   {name: "avatar", maxCount:1},
+// //   {name: "gallery", maxCount:2},
+// // ]), (req, res) => {
+// //   res.send('Hello World');
+// // });
+
+// app.post("/", upload.single("avatar"), (req, res) => {
+//   res.send("Hello World");
 // });
 
-// // 404 error handle
-// app.use((req, res, next) => {
-//   next("Requested url was not found!");
-// });
-
+// // default error handler
 // app.use((err, req, res, next) => {
-//   // it has to be last middleware
-//   if (res.headerSent) {
-//     next("there was a problem!");
-//   } else {
-//     if (err.message) {
-//       res.status(500).send(err.message);
+//   if (err) {
+//     if (err instanceof multer.MulterError) {
+//       res.status(500).send("There was an upload error!");
 //     } else {
-//       res.send("there was an error");
+//       res.status(500).send(err.message);
 //     }
+//   } else {
+//     res.send("Success");
 //   }
 // });
 
 // app.listen(3000, () => {
 //   console.log("listening on port 3000");
 // });
+*/
 
-//assynchronous code error handle
+/*
+// multiple file error handeling
+// const express = require("express");
+// const multer = require("multer");
+
+// // file upload folder
+// const UPLOADS_FOLDER = "./uploads/";
+
+// // prepare final multer upload object
+// var upload = multer({
+//   dest: UPLOADS_FOLDER,
+//   limits: {
+//     fileSize: 1000000, // byte size- 1MB
+//   },
+//   // single file
+//   fileFilter: (req, file, cb) => {
+//     if (file.fieldname === "avatar") {
+//       if (
+//         file.mimetype === "image/png" ||
+//         file.mimetype === "image/jpg" ||
+//         file.mimetype === "image/jpeg"
+//       ) {
+//         cb(null, true);
+//       } else {
+//         cb(new Error("Only .png, .jpg or .jpeg formate allowed"));
+//       }
+//     } else if (file.fieldname === "doc") {
+//       if (file.mimetype === "application/pdf") {
+//         cb(null, true);
+//       } else {
+//         cb(new Error("Only .pdf formate allowed"));
+//       }
+//     }
+//   },
+// });
+
+// const app = express();
+
+// app.post(
+//   "/",
+//   upload.fields([
+//     { name: "avatar", maxCount: 1 },
+//     { name: "doc", maxCount: 1 },
+//   ]),
+//   (req, res) => {
+//     res.send("Hello World");
+//   }
+// );
+
+// // default error handler
+// app.use((err, req, res, next) => {
+//   if (err) {
+//     if (err instanceof multer.MulterError) {
+//       res.status(500).send("There was an upload error!");
+//     } else {
+//       res.status(500).send(err.message);
+//     }
+//   } else {
+//     res.send("Success");
+//   }
+// });
+
+// app.listen(3000, () => {
+//   console.log("listening on port 3000");
+// });
+*/
+
+// storage configure/control
 const express = require("express");
-const fs = require("fs");
-const app = express();
+const multer = require("multer");
+const path = require("path");
 
-app.get("/", [
-  (req, res, next) => {
-    fs.readFile("/file-does-not-exist", (err, data) => {
-      console.log(data);
-      next(err);
-    });
-  },
-  (req, res, next) => {
-    console.log(data.property);
-  },
-]);
+// file upload folder
+const UPLOADS_FOLDER = "./uploads/";
 
-app.use((req, res, next) => {
-  console.log("i am not called");
-  next();
+// define the storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOADS_FOLDER);
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname);
+    const fileName =
+      file.originalname
+        .replace(fileExt, "")
+        .toLowerCase()
+        .split(" ")
+        .join("-") +
+      "-" +
+      Date.now();
+    cb(null, (fileName + fileExt));
+  },
 });
 
-app.use((err, req, res, next) => {
-  // it has to be last middleware
-  if (res.headerSent) {
-    next("there was a problem!");
-  } else {
-    if (err.message) {
-      res.status(500).send(err.message);
-    } else {
-      res.send("there was an error");
+// prepare final multer upload object
+var upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1000000, // byte size- 1MB
+  },
+  // single file
+  fileFilter: (req, file, cb) => {
+    if (file.fieldname === "avatar") {
+      if (
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg"
+      ) {
+        cb(null, true);
+      } else {
+        cb(new Error("Only .png, .jpg or .jpeg formate allowed"));
+      }
+    } else if (file.fieldname === "doc") {
+      if (file.mimetype === "application/pdf") {
+        cb(null, true);
+      } else {
+        cb(new Error("Only .pdf formate allowed"));
+      }
     }
+  },
+});
+
+const app = express();
+
+app.post(
+  "/",
+  upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "doc", maxCount: 1 },
+  ]),
+  (req, res) => {
+    console.log(req.files);
+    res.send("File uploaded successfully");
+  }
+);
+
+// default error handler
+app.use((err, req, res, next) => {
+  if (err) {
+    if (err instanceof multer.MulterError) {
+      res.status(500).send("There was an upload error!");
+    } else {
+      res.status(500).send(err.message);
+    }
+  } else {
+    res.send("Success");
   }
 });
 
 app.listen(3000, () => {
   console.log("listening on port 3000");
 });
-
