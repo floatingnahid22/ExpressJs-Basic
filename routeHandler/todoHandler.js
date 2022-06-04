@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
   Todo.find({ status: "active" })
     .select({
       _id: 0,
-      __v: 0,
+      _v: 0,
       date: 0,
     })
     .limit(2)
@@ -27,19 +27,54 @@ router.get("/", (req, res) => {
     });
 });
 
+// GET ACTIVE TODOS
+router.get("/active", async (req, res) => {
+  const todo = new Todo();
+  const data = await todo.findActive();
+  res.status(200).json({
+    data,
+  });
+});
+
+// GET ACTIVE TODOS with callback
+router.get("/active-callback", (req, res) => {
+  const todo = new Todo();
+  todo.findActiveCallback((err, data) => {
+    res.status(200).json({
+      data,
+    });
+  });
+});
+
+// GET ACTIVE TODOS
+router.get("/js", async (req, res) => {
+  const data = await Todo.findByJS();
+  res.status(200).json({
+    data,
+  });
+});
+
+// GET TODOS BY LANGUAGE
+router.get("/language", async (req, res) => {
+  const data = await Todo.find().byLanguage("react");
+  res.status(200).json({
+    data,
+  });
+});
+
 // GET A TODO by ID
 router.get("/:id", async (req, res) => {
-    try{
-      const data = await Todo.find({ _id: req.params.id });
-      res.status(200).json({
-        result: data,
-        message: "Success",
-      });
-    } catch(err) {
-      res.status(500).json({
-        error: "There was a server side error!",
-      });
-    }
+  try {
+    const data = await Todo.find({ _id: req.params.id });
+    res.status(200).json({
+      result: data,
+      message: "Success",
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: "There was a server side error!",
+    });
+  }
 });
 
 // POST A TODO
